@@ -46,6 +46,15 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 
 	private float elapsedTime = 0;
 
+	//Camera Movement
+	private float cameraX = 0;
+	private float cameraY = 0;
+
+	//Player Movement
+	private float playerXVel = 0;
+	private float playerYVel = 0;
+	private boolean move = false;
+	private float playerSpeed = 15;
 
 
 	class TouchInfo{
@@ -71,7 +80,6 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 
 		textureAtlas = new TextureAtlas(Gdx.files.internal("sprites.txt"));
 
-
 		batch = new SpriteBatch();
 		animation = new Animation(1/5f, textureAtlas.getRegions());
 
@@ -96,12 +104,14 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 
 		elapsedTime += Gdx.graphics.getDeltaTime();
 
-		camera.update();
 		tiledMapRenderer.setView(camera);
 		tiledMapRenderer.render();
 
 		batch.begin();
 
+		cameraMove();
+
+		camera.update();
 
 		message = "";
 		for(int i = 0; i < 5; i++){
@@ -117,11 +127,11 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		layout.setText(font, message);
 		float x = w/2 - layout.width/2;
 		float y = h/2 + layout.height/2;
+
 		font.draw(batch, message, x, y);
 
 		// Draws the animation
 		batch.draw((TextureRegion) animation.getKeyFrame(elapsedTime, true), x-50, y+400);
-
 
 		batch.draw(buttons, 0, 0);
 
@@ -168,10 +178,33 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if(pointer < 5){
+		/**if(pointer < 5){
 			touches.get(pointer).touchX = screenX;
 			touches.get(pointer).touchY = screenY;
 			touches.get(pointer).touched = true;
+		}**/
+		// Right button
+		if(737 < screenX && screenX < 970 && 1620 < screenY && screenY < 1755){
+			playerXVel = playerSpeed;
+            move = true;
+		}
+
+		//Left Button
+		else if(80 < screenX && screenX < 340 && 1620 < screenY && screenY < 1755){
+			playerXVel = -playerSpeed;
+			move = true;
+		}
+
+		//Up Button
+		else if (475 < screenX && screenX < 600 && 1335 < screenY && screenY < 1590){
+			playerYVel = playerSpeed;
+			move = true;
+		}
+
+		//Down Button
+		else if(475 < screenX && screenX < 600 && 1805 < screenY && screenY < 2060){
+			playerYVel = -playerSpeed;
+			move = true;
 		}
 		return true;
 	}
@@ -183,6 +216,29 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 			touches.get(pointer).touchY = 0;
 			touches.get(pointer).touched = false;
 		}
+
+        if(737 < screenX && screenX < 970 && 1620 < screenY && screenY < 1755){
+            playerXVel = 0;
+            move = false;
+        }
+
+        //Left Button
+        else if(80 < screenX && screenX < 340 && 1620 < screenY && screenY < 1755){
+            playerXVel = 0;
+            move = false;
+        }
+
+        //Up Button
+        else if (475 < screenX && screenX < 600 && 1335 < screenY && screenY < 1590){
+            playerYVel = 0;
+            move = false;
+        }
+
+        //Down Button
+        else if(475 < screenX && screenX < 600 && 1805 < screenY && screenY < 2060){
+            playerYVel = 0;
+            move = false;
+        }
 
 		return true;
 	}
@@ -200,5 +256,21 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
+	}
+
+	public void cameraMove(){
+
+		if(move == true){
+
+			System.out.println("X= "+playerXVel + " " +
+					"  Y= " + playerYVel);
+
+			cameraX =+ playerXVel;						//Adds players velocity to the camera location.
+			cameraY =+ playerYVel;
+
+			camera.translate(cameraX, cameraY);			//Moves the camera with new location.
+		}
+
+
 	}
 }
