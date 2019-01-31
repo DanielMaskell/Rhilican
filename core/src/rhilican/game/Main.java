@@ -54,7 +54,7 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 	private float playerXVel = 0;
 	private float playerYVel = 0;
 	private boolean move = false;
-	private float playerSpeed = 15;
+	private float playerSpeed = 400;
 
 
 	class TouchInfo{
@@ -125,8 +125,8 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 
 		GlyphLayout layout = new GlyphLayout();
 		layout.setText(font, message);
-		float x = w/2 - layout.width/2;
-		float y = h/2 + layout.height/2;
+		float x = w/2.0f - layout.width/2;
+		float y = h/2.0f + layout.height/2;
 
 		font.draw(batch, message, x, y);
 
@@ -265,8 +265,8 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 			System.out.println("X= "+playerXVel + " " +
 					"  Y= " + playerYVel);
 
-			cameraX =+ playerXVel;						//Adds players velocity to the camera location.
-			cameraY =+ playerYVel;
+			cameraX =+ playerXVel*Gdx.graphics.getDeltaTime();						//Adds players velocity to the camera location.
+			cameraY =+ playerYVel*Gdx.graphics.getDeltaTime();
 
 			camera.translate(cameraX, cameraY);			//Moves the camera with new location.
 		}
